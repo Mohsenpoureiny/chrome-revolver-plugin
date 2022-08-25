@@ -19,11 +19,6 @@
   </style>
 </head>
   <body>
-    <div id="topline">
-      <h1>Revolver - Tabs</h1>
-      <span class="byline">by <a href="http://www.buildcontext.com/">Ben Hedrington</a> Twitter: <a href="http://twitter.com/benhedrington">@benhedrington</a></span>
-      <div class="saveheader"><span id="status"></span><button id="savetop" class="save-btn">Save</button></div>
-    </div>
     <div id="settings">
       <p>
         <label for="seconds">Seconds:</label> 
@@ -46,10 +41,14 @@
         <span class="example"><strong>Rotation will pause</strong> if the browser has been interacted with within 15 seconds.</span>
       </p>
       <div>
+        <label for="reCheck">Close extra tabs that are opened and reopen the profile tabs that are closed:</label> 
+        <ul id="reCheck-list">
+        </ul>
+      </div>
+      <div>
         <label>Reload-able tab</label>
         <span class="example">Checked tabs will reload before opening</span>
         <ul id="tab-list">
-
         </ul>
       </div>
  <!--      <p>
@@ -59,8 +58,6 @@
       </p> -->
       <button id="save" class="save-btn">Save</button><span id="status2"></span>
     </div>
-
-    <p class="thanks">Special thanks for <a href="https://code.google.com/p/revolver-chrome-extensions/">open source code contributions</a> from Fred Emmott and Aurimas Liutikas.</p>
 
     <script src="options_script.js"></script>
   </body>

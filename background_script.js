@@ -1,6 +1,7 @@
 var settings = ['seconds', 
   'reload', 
   'inactive', 
+  'reCheck', 
   'autostart', 
   'noRefreshList', 
   'reloadTabIds'

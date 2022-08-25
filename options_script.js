@@ -3,43 +3,53 @@ var status = document.getElementById("status");
 var status2 = document.getElementById("status2");
 
 document.addEventListener('DOMContentLoaded', function () {
-chrome.storage.sync.get(bg.settings, function (settings) {
-  document.getElementById("seconds").value = settings.seconds || 10;
-  document.getElementById("reload").checked = !!settings.reload;
-  document.getElementById("inactive").checked = !!settings.inactive;
-  document.getElementById("autostart").checked = !!settings.autostart;
-  var rtIds = settings.reloadTabIds || [];
+  chrome.storage.sync.get(bg.settings, function (settings) {
+    document.getElementById("seconds").value = settings.seconds || 10;
+    document.getElementById("reload").checked = !!settings.reload;
+    document.getElementById("inactive").checked = !!settings.inactive;
+    document.getElementById("autostart").checked = !!settings.autostart;
+    var rtIds = settings.reloadTabIds || [];
 
-  chrome.tabs.query({
-    windowId: chrome.windows.WINDOW_ID_CURRENT
-  }, function (tabs) {
-    var tabList = document.getElementById("tab-list");
-    tabList.innerHTML = "";
-    tabs.forEach(function (t) {
-      var checked = rtIds.indexOf(t.id) > -1 ? 'checked="checked"' : "";
-      tabList.innerHTML += "<li><label><input type='checkbox' value='" + t.id + "' " + checked + " />&nbsp;" + t.title + "</label></li>";
+    chrome.tabs.query({
+      windowId: chrome.windows.WINDOW_ID_CURRENT
+    }, function (tabs) {
+      var tabList = document.getElementById("tab-list");
+      var reCheckList = document.getElementById("reCheck-list");
+      tabList.innerHTML = "";
+      reCheckList.innerHTML = "";
+      tabs.forEach(function (t) {
+        var checked = rtIds.indexOf(t.id) > -1 ? 'checked="checked"' : "";
+        tabList.innerHTML += "<li><label><input type='checkbox' value='" + t.id + "' " + checked + " />&nbsp;" + t.title + "</label></li>";
+        reCheckList.innerHTML += "<li><label><input type='checkbox' value='" + t.id + "' checked='checked' />&nbsp;" + t.title + "</label></li>";
+      });
     });
   });
 });
-});
 
-function save_options () {
+function save_options() {
   var seconds = parseInt(document.getElementById("seconds").value || "10", 10);
   var reload = document.getElementById("reload").checked;
   var inactive = document.getElementById("inactive").checked;
+  var reCheck = document.getElementById("reCheck").checked;
   var autostart = document.getElementById("autostart").checked;
 
   // todo ... may start thinking about saving this as urls liek they're blacklist url
   var reloadTabIds = [].map.call(document.querySelectorAll("#tab-list input:checked"), function (input) {
     return parseInt(input.value, 10);
   });
-
+  var reCheckListIds = [];
+  [].map.call(document.querySelectorAll("#reCheck-list input:checked"), function (input) {
+    chrome.tabs.get(parseInt(input.value, 10), function (ntab) {
+      reCheckListIds.push(ntab);
+    })
+  });
   status.innerHTML = status2.innerHTML = "Saving Options";
 
   var settings = {
     'seconds': seconds,
     'reload': reload,
     'inactive': inactive,
+    'reCheck': reCheckListIds,
     'autostart': autostart,
     'reloadTabIds': reloadTabIds
   };
@@ -49,8 +59,8 @@ function save_options () {
     inst.update(settings);
   });
   chrome.storage.sync.set(settings);
-  setTimeout(function() {
-      status.innerHTML = status2.innerHTML = "";
+  setTimeout(function () {
+    status.innerHTML = status2.innerHTML = "";
   }, 3000);
 }
 
